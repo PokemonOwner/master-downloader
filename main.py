@@ -1,3 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+===========================================================================
+                           MASTER BOT
+===========================================================================
+Author             : Moderator007
+Latest Commit Hash : a70a8a8
+Description        : This bot downloads links from a .TXT file and uploads
+                     them to Telegram with metadata extraction, FFmpeg‑generated
+                     thumbnails, and real‑time progress updates.
+===========================================================================
+"""
+
 import os
 import re
 import sys
@@ -282,12 +296,15 @@ async def upload_handler(event):
             elif '/master.mpd' in url:
                 # -------------------------------------------------------------------
                 # Updated handling for master.mpd URLs:
-                # For Telegram Download Bot, extract video_id from the full URL and use the new endpoint.
+                # For Telegram Download Bot, extract the video_id from the full URL and use the new endpoint.
+                # Example full URL: https://d1d34p8vz63oiq.cloudfront.net/24d9ac67-629a-4ef1-b410-8613b01c495e/master.mpd
+                # Only "24d9ac67-629a-4ef1-b410-8613b01c495e" is used.
                 # -------------------------------------------------------------------
                 m = re.search(r'cloudfront\.net/([^/]+)/master\.mpd', url)
                 if m:
                     video_id = m.group(1)
                     url = f"https://pw.maxstudy.site/?id={video_id}&token={pw_token}"
+
             # -------------------------------------------------------------------
             # Construct a safe file name based on the link title
             # -------------------------------------------------------------------
@@ -312,7 +329,7 @@ async def upload_handler(event):
             if "jw-prod" in url:
                 cmd = (
                     f'yt-dlp --external-downloader aria2c '
-                    f'--external-downloader-args "-x 16 -s 16 -k 1M --timeout=120 --connect-timeout=120 '
+                    f'--external-downloader-args "-x 64 -s 64 -k 1M --timeout=120 --connect-timeout=120 '
                     f'--max-download-limit=0 --max-overall-download-limit=0 '
                     f'--enable-http-pipelining=true --file-allocation=falloc" '
                     f'-o "{file_name}.mp4" "{url}"'
@@ -320,7 +337,7 @@ async def upload_handler(event):
             else:
                 cmd = (
                     f'yt-dlp --external-downloader aria2c '
-                    f'--external-downloader-args "-x 16 -s 16 -k 1M --timeout=120 --connect-timeout=120 '
+                    f'--external-downloader-args "-x 64 -s 64 -k 1M --timeout=120 --connect-timeout=120 '
                     f'--max-download-limit=0 --max-overall-download-limit=0 '
                     f'--enable-http-pipelining=true --file-allocation=falloc" '
                     f'-f "{ytf}" "{url}" -o "{file_name}.mp4"'
@@ -381,7 +398,7 @@ async def upload_handler(event):
                         f"**⥥ DOWNLOADING... »**\n\n"
                         f"**Name »** `{file_name}`\n"
                         f"**Quality »** {raw_res}\n\n"
-                        f"**URL »** `{url}`"
+                        f"**URL »** `@TechMonX`"
                     )
                     res_file = await helper.download_video(url, cmd, file_name)
                     await bot.delete_messages(event.chat_id, dl_msg.id)
@@ -415,7 +432,7 @@ async def upload_handler(event):
                     async def progress_callback(current, total):
                         nonlocal last_percent, last_time, last_bytes
                         percent = (current / total) * 100
-                        if percent - last_percent >= 5 or current == total:
+                        if percent - last_percent >= 20 or current == total:
                             now = time.time()
                             dt = now - last_time
                             speed = (current - last_bytes) / dt if dt > 0 else 0
