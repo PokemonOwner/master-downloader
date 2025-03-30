@@ -1,18 +1,3 @@
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-===========================================================================
-                           MASTER BOT
-===========================================================================
-Author             : Moderator007
-Latest Commit Hash : a70a8a8
-Description        : This bot downloads links from a .TXT file and uploads
-                     them to Telegram with metadata extraction, FFmpeg‑generated
-                     thumbnails, and real‑time progress updates.
-===========================================================================
-"""
-
 import os
 import re
 import sys
